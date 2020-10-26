@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { View, TouchableOpacity, Text } from 'react-native'
 import types from '../../util/types'
 import { connect } from 'react-redux'
+import Loader from '../../components/Loader'
 
 const Home = (props) => {
 
@@ -18,6 +19,8 @@ const Home = (props) => {
             onPress={()=>apiCall()} >
                 <Text>Press</Text>
             </TouchableOpacity>
+
+            <Loader show={loading} />
             
         </View>
     )
