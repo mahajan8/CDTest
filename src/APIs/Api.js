@@ -6,17 +6,23 @@ import { create } from 'apisauce'
 //   "Accept": "application/json"
 // }
 
-const api = create({
-  baseURL: Config.baseUrl,
-  timeout: 30000
-})
-
 const Api = {
 
-  getJSON(url) {
+  getJSON(url, base) {
+
+    const api = create({
+      baseURL: Config.baseUrl,
+      timeout: 30000
+    })
+
+    if(base) {
+      api.setBaseURL(base)
+    } 
+    
     return new Promise((resolve, reject) => {
       api.get(url)
         .then(response => {
+          console.log(response)
           if (response.ok) {
             resolve(response.data)
           } else {

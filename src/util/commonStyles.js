@@ -15,19 +15,24 @@ const commonStyles = EStyleSheet.create({
     },
     seperator: {
         height:1, 
-        backgroundColor: '#D8D8D8'
+        backgroundColor: '#D8D8D8',
+        width: '90%',
+        alignSelf: 'center'
+    },
+    fontXSmall: {
+        fontSize: '10rem'
     },
     fontSmall: {
         fontSize: '12rem'
     },
     fontRegular: {
-        fontSize: '15rem'
+        fontSize: '14rem'
     },
     fontLarge: {
-        fontSize: '17rem'
+        fontSize: '18rem'
     },
     fontXLarge: {
-        fontSize: '20rem'
+        fontSize: '25rem'
     },
     
 })
