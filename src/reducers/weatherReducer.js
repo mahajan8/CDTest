@@ -1,4 +1,3 @@
-import { REGISTER } from "redux-persist";
 import strings from "../util/strings";
 import types from "../util/types";
 
@@ -7,30 +6,34 @@ const initialState = {
     daily: [],
     area: '',
     tempType: 0,
-    loading:false
+    loading: false,
+    error: ''
 }
 
-// homeReducer toggles loading variable when fetching api, and stores WEATHER list.
+// weatherReducer toggles loading variable when fetching api, and stores WEATHER list.
 
-export const weatherReducer = (state = initialState, action ) => {
-    switch(action.type) {
-        case types.GET_WEATHER : 
+export const weatherReducer = (state = initialState, action) => {
+    switch (action.type) {
+        case types.GET_WEATHER:
+        case types.GET_LOCATION:
             return {
                 ...state,
-                loading:true
+                loading: true
             }
         case types.GET_WEATHER_SUCCESS:
-            let {current, daily} = action.data
-            daily.splice(0,1)
+            let { current, daily } = action.data
+            daily.splice(0, 1)
             return {
                 ...state,
                 loading: false,
                 current: current,
-                daily: daily
+                daily: daily,
+                error: ''
             }
         case types.GET_WEATHER_FAILED:
             return {
                 ...state,
+                error: action.error,
                 loading: false
             }
         case types.GET_AREA_SUCCESS:
@@ -40,14 +43,19 @@ export const weatherReducer = (state = initialState, action ) => {
             }
         case types.GET_AREA_FAILED:
             return {
-                ...state, 
+                ...state,
                 area: strings.noCity
             }
-        case types.CHANGE_TEMP_TYPE: 
-        console.log(state.tempType)
+        case types.CHANGE_TEMP_TYPE:
             return {
                 ...state,
-                tempType: state.tempType? 0 : 1
+                tempType: state.tempType ? 0 : 1
+            }
+        case types.SET_ERROR:
+            return {
+                ...state,
+                error: action.error,
+                loading: false
             }
         default:
             return state

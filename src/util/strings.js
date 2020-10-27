@@ -6,7 +6,9 @@ const strings ={
    locationFail: 'Failed to get Location.',
    permissionDenied: 'Location Permission Denied',
    noCity: 'Unable to get City',
-   unknown: 'Unknown'
+   unknown: 'Unknown',
+   noInternet: 'No Internet Connectivity.',
+   retry: 'RETRY'
 };
 
 export default strings

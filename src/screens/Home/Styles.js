@@ -9,7 +9,6 @@ const Styles = EStyleSheet.create({
         paddingBottom: '10rem'
     },
     list: { 
-        ...commonStyles.shadow,
         // backgroundColor: Color, 
         width: '90%', 
         alignSelf: 'center', 
@@ -18,14 +17,12 @@ const Styles = EStyleSheet.create({
     },
     currentView: { 
         paddingHorizontal: '30rem',
-        paddingVertical: '20vrem'
+        paddingVertical: '40vrem'
     },
     areaTitle: {
-        ...commonStyles.fontLarge,
         fontWeight: 'bold'
     },
     dateText: {
-        ...commonStyles.fontXSmall,
         color: Colors.grey
     },
     currentTempView: {
@@ -34,9 +31,6 @@ const Styles = EStyleSheet.create({
         justifyContent: 'space-between',
         paddingHorizontal: '20rem',
         paddingVertical: '15vrem'
-    },
-    currentTempText: {
-        ...commonStyles.fontXLarge
     },
     currentIcon: {
         width: '100rem',
@@ -52,7 +46,6 @@ const Styles = EStyleSheet.create({
         alignItems: 'center',
     },
     detailsText: {
-        ...commonStyles.fontSmall,
         fontWeight: 'bold',
         color: Colors.grey,
         marginRight: '10rem'
@@ -65,6 +58,23 @@ const Styles = EStyleSheet.create({
     },
     selectedText: {
         color: Colors.blue
+    },
+    errorContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    errorButton: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingHorizontal: '30rem',
+        paddingVertical: '10vrem',
+        marginTop: '20rem',
+        backgroundColor: Colors.blue,
+        borderRadius: 25
+    },
+    errorButtonText: {
+        color: Colors.white
     }
 
 })

@@ -10,19 +10,32 @@ import Styles from './Styles'
 import Utils from '../../util/Utils'
 import Config from '../../APIs/ApiConfig'
 import Images from '../../util/images'
+import NetInfo from "@react-native-community/netinfo";
+import commonStyles from '../../util/commonStyles'
 
 const Home = (props) => {
 
     useEffect(() => {
-        if(Platform.OS=='ios')
-            getLocation()
-        else 
-            getPermission()
+
+        getLocation()
     }, [])
 
-    const [error, setError] = useState('')
-    const [date, setDate] = useState('')
+    const getLocation = () => {
 
+        NetInfo.fetch().then(state => {
+            if (state.isConnected) {
+                props.fetchLocation()
+                if (Platform.OS == 'ios')
+                    getWeather()
+                else
+                    getPermission()
+            }
+            else
+                props.setError(strings.noInternet)
+        });
+    }
+
+    const [date, setDate] = useState('')
 
     // Get Location Permission For Android 
     const getPermission = async () => {
@@ -31,9 +44,9 @@ const Home = (props) => {
                 PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
             );
             if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                getLocation();
+                getWeather();
             } else {
-                setError(strings.permissionDenied)
+                props.setError(strings.permissionDenied)
             }
         } catch (err) {
             console.warn(err);
@@ -41,37 +54,41 @@ const Home = (props) => {
     }
 
     // Get Geolocation 
-    const getLocation = () => {
-        
+    const getWeather = () => {
         Geolocation.getCurrentPosition(position => {
             let { latitude, longitude } = position.coords
-            setError('')
-            props.getArea('30.703845','76.750688')
+            props.getArea('30.703845', '76.750688')
             props.getWeather(latitude, longitude)
             setDate(new Date().toString())
         },
-        err=>setError(err.message),
-        {
-          enableHighAccuracy: false,
-          timeout: 10000,
-          maximumAge: 1000
-        },);
-        
+            err => props.setError(err.message),
+            {
+                enableHighAccuracy: false,
+                timeout: 10000,
+                maximumAge: 1000
+            });
     }
 
-    const { current, daily, loading, area, tempType } = props
+    const { current, daily, loading, area, tempType, error } = props
 
-    const {getTemp} = Utils
+    const { getTemp } = Utils
 
-    
-    if(error) 
+    if (loading) 
         return (
-            <View style={{flex:1}} >
-                <Text>{error}</Text>
+            // {/* Lottie Loader while fetching data from api  */}
+            <Loader show={loading} />
+        )
+    else if (error)
+        return (
+            <View style={Styles.errorContainer} >
+                <Text style={commonStyles.fontLarge} >{error}</Text>
+                <TouchableOpacity style={Styles.errorButton} onPress={() => getLocation()} >
+                    <Text style={[commonStyles.fontRegular, Styles.errorButtonText]} >{strings.retry}</Text>
+                </TouchableOpacity>
             </View>
         )
     else {
-        const {temp, wind_speed, humidity} = current
+        const { temp, wind_speed, humidity } = current
 
         const imageIcon = current.weather ? Config.iconApi + current.weather[0].icon + '@2x.png' : null
 
@@ -82,14 +99,14 @@ const Home = (props) => {
                 <View style={Styles.currentView} >
                     {/* Area and Date/Time when weather data collected.  */}
                     <View>
-                        <Text style={Styles.areaTitle} >{area}</Text>
-                        <Text style={Styles.dateText} > {date} </Text>
+                        <Text style={[commonStyles.fontLarge, Styles.areaTitle]} >{area}</Text>
+                        <Text style={[commonStyles.fontXSmall, Styles.dateText]} > {date} </Text>
                     </View>
-                    
+
                     {/* Current Temperature and Weather icon from OpenWeather */}
                     <View style={Styles.currentTempView} >
-                        <Text style={Styles.currentTempText} >{getTemp(temp, tempType)}</Text>
-                        <Image style={Styles.currentIcon} source={{uri: imageIcon}} />
+                        <Text style={commonStyles.fontXLarge} >{getTemp(temp, tempType)}</Text>
+                        <Image style={Styles.currentIcon} source={{ uri: imageIcon }} />
                     </View>
 
                     <View style={Styles.detailsOuterView} >
@@ -97,19 +114,19 @@ const Home = (props) => {
                         {/* Wind and Humidity information and icons  */}
                         <View style={Styles.detailsView} >
                             <Image source={Images.wind} style={Styles.detailsIcons} />
-                            <Text style={Styles.detailsText}>{wind_speed}</Text>
+                            <Text style={[commonStyles.fontSmall, Styles.detailsText]}>{wind_speed*3.6} kmph</Text>
                             <Image source={Images.drop} style={Styles.detailsIcons} />
-                            <Text style={Styles.detailsText}>{humidity}</Text>
+                            <Text style={[commonStyles.fontSmall, Styles.detailsText]}>{humidity} %</Text>
                         </View>
 
                         {/* Change Temperature Units (Celcius or Farenheit)  */}
-                        <TouchableOpacity style={Styles.detailsView} onPress={()=>props.changeType()} >
-                            <Text style={[Styles.detailsText, !tempType && Styles.selectedText]} >{strings.celcius}</Text>
+                        <TouchableOpacity style={Styles.detailsView} onPress={() => props.changeType()} >
+                            <Text style={[commonStyles.fontSmall, Styles.detailsText, !tempType && Styles.selectedText]} >{strings.celcius}</Text>
                             <Image source={Images.change} style={Styles.detailsIcons} />
-                            <Text style={[Styles.detailsText, tempType && Styles.selectedText]} >{strings.farenheit}</Text>
+                            <Text style={[commonStyles.fontSmall, Styles.detailsText, tempType && Styles.selectedText]} >{strings.farenheit}</Text>
                         </TouchableOpacity>
                     </View>
-                    
+
                 </View>
 
                 {/* Forecast for 7 days Listing */}
@@ -124,11 +141,8 @@ const Home = (props) => {
                     }
                     // ItemSeparatorComponent={() => <View style={commonStyles.seperator} />}
                     contentContainerStyle={Styles.list}
-                    keyExtractor={(item, index)=>`weatherTile${index}`}
+                    keyExtractor={(item, index) => `weatherTile${index}`}
                 />
-
-                {/* Lottie Loader while fetching data from api  */}
-                <Loader show={loading} />
 
             </View>
         )
@@ -140,7 +154,8 @@ const mapStateToProps = (state) => ({
     current: state.weatherReducer.current,
     daily: state.weatherReducer.daily,
     area: state.weatherReducer.area,
-    tempType: state.weatherReducer.tempType
+    tempType: state.weatherReducer.tempType,
+    error: state.weatherReducer.error
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -161,6 +176,13 @@ const mapDispatchToProps = (dispatch) => ({
     }),
     changeType: () => dispatch({
         type: types.CHANGE_TEMP_TYPE
+    }),
+    setError: (error) => dispatch({
+        type: types.SET_ERROR,
+        error
+    }),
+    fetchLocation: () =>dispatch({
+        type: types.GET_LOCATION
     })
 })
 

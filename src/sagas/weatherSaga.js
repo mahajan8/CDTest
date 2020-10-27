@@ -21,12 +21,11 @@ function* getWeather(action) {
     try {
         // Calling weather Api
         const response = yield call(Api.getJSON, Config.onecall + data )
-        // console.log(response)
+        console.log(response)
         yield put({type: types.GET_WEATHER_SUCCESS, data: response})
         
     } catch (err) {
-        alert(err.message)
-        yield put({type: types.GET_WEATHER_FAILED})
+        yield put({type: types.GET_WEATHER_FAILED, error: err.message? err.message : err})
     }
 }
 
@@ -43,7 +42,7 @@ function* getArea(action) {
     var data = '?' + Object.keys(params).map(key => key + '=' + params[key]).join('&');
 
     try {
-        // Calling weather Api
+        // Calling Google Maps Api
 
         const response = yield call(Api.getJSON, '', Config.maps + data)
 
@@ -61,7 +60,6 @@ function* getArea(action) {
         }
         
     } catch (err) {
-        alert(err.message)
         yield put({type: types.GET_AREA_FAILED})
     }
 }

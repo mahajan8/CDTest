@@ -22,7 +22,6 @@ const Api = {
     return new Promise((resolve, reject) => {
       api.get(url)
         .then(response => {
-          console.log(response)
           if (response.ok) {
             resolve(response.data)
           } else {

@@ -1,5 +1,5 @@
 import strings from "./strings"
-import configureStore from '../configureStore'
+
 const Utils = {
 
     getTemp: (temperature, tempType = 0) => {

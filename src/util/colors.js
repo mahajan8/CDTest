@@ -1,4 +1,3 @@
-import { color } from "react-native-reanimated"
 
 const Colors = {
     grey: '#a6a6a4',

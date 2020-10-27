@@ -28,13 +28,13 @@ const Tile = (props) => {
     return (
         // Animated View Tiles with Day Weather icon and Min/Max Temp for the day
         <Animatable.View style={[styles.container]} animation='fadeInLeft' delay={250*(index+1)} >
-            <Text style={styles.day} >{day}</Text>
+            <Text style={[commonStyles.fontRegular, styles.day]} >{day}</Text>
 
             <Image source={{uri: imageIcon}} style={styles.weatherIcon} />
 
             <View style={styles.tempDetails} >
-                <Text style={styles.tempText} >{getTemp(temp.min, tempType)}/{getTemp(temp.max, tempType)}</Text>
-                <Text style={styles.tempText} >{formatText(weather[0].description)}</Text>
+                <Text style={[commonStyles.fontXSmall, styles.tempText]} >{getTemp(temp.min, tempType)}/{getTemp(temp.max, tempType)}</Text>
+                <Text style={[commonStyles.fontXSmall, styles.tempText]} >{formatText(weather[0].description)}</Text>
             </View>
         </Animatable.View>
     )
@@ -48,7 +48,6 @@ const styles = EStyleSheet.create({
         alignItems: 'center',
     },
     day: {
-        ...commonStyles.fontRegular,
         flex: 3,
         fontWeight: 'bold'
     },
@@ -62,7 +61,6 @@ const styles = EStyleSheet.create({
         height: '22rem'
     },
     tempText: {
-        ...commonStyles.fontXSmall,
         textAlign: 'center'
     }
 })
